@@ -113,4 +113,3 @@ El código de esta solución aplica varios estándares de seguridad para protege
 2. **Cifrado en Reposo**: Se habilitó desde AWS RDS haciendo uso de una CMK.
 3. **Validación y Sanitización de Entradas**: Se validó y sanitizó las entradas para protección contra vulnerabilidades, cumpliendo con NIST y OWASP.
 4. **Control de Acceso Basado en Roles (RBAC)**: Se implementaron controles de acceso basados en roles para asegurar que solo los usuarios autorizados puedan acceder a ciertos datos.
-5. **Disponibilidad de Datos**: La disponibilidad de los datos de clientes está condicionada por la API interna basada en roles.
