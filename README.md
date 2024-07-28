@@ -68,10 +68,14 @@ cd ml-challenge-customers-mngr
 
 2. Asegúrate de que los siguientes archivos estén en el directorio del proyecto:
     - docker-compose.yml
-    - Dockerfile
+    - syncer.dockerfile
+    - api.dockerfile
+    - syncer-aws.dockerfile
+    - api-aws.dockerfile
     - requirements.txt
     - wait-for-db-ready.sh
-    - app.py
+    - syncer.py
+    - api.py
 
     Entre otros.
 
@@ -98,6 +102,32 @@ Para conectarte a la base de datos MySQL y verificar los datos almacenados:
     ```
 
     Esto te permitirá ver los datos almacenados en la tabla usuarios.
+
+## Prueba de la API
+
+Para probar la API interna configurada para obtener información de clientes:
+
+1. Asegúrate de que la aplicación esté ejecutándose. Si no lo está, inicia la aplicación con:
+
+    `docker-compose up --build`
+
+2. Abre una terminal y utiliza curl o cualquier herramienta de cliente HTTP (como Postman) para realizar solicitudes a la API.
+
+3. **Verificación de Salud**: Para verificar el estado de la aplicación, realiza una solicitud GET a la ruta `/health`:
+
+    `curl -X GET http://localhost:80/health`
+    
+    Esto debería devolver un estado `200` si la aplicación está funcionando correctamente.
+
+4. **Solicitudes Autorizadas**: La API de clientes está protegida por control de acceso basado en roles. Usa uno de los siguientes tokens en el encabezado Authorization para realizar solicitudes GET a la ruta `/clientes`:
+
+    - `admin-token`: Acceso completo
+	- `viewer-token`: Acceso limitado
+	- `analyst-token`: Acceso con datos ofuscados
+
+    Ejemplo usando curl:
+
+    `curl -X GET http://localhost:80/clientes -H "Authorization: admin-token"`
 
 ## Seguridad y Cumplimiento
 
