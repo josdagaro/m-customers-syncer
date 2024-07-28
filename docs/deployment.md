@@ -35,6 +35,16 @@ Esta configuración se disponibiliza para pruebas locales, por lo cual para corr
 
 **Nota Importante**: Para que este despliegue pueda funcionar, es importante haber realizado previamente el aprovisionamiento de infraestructura mediante el proyecto `ml-challenge-iac`, para verlo haz click [aquí](https://github.com/josdagaro/ml-challenge-iac).
 
+### Escaneo de Vulnerabilidades de Imágenes Docker en ECR
+
+En este despliegue hacia la nube, se cuenta con un escaneo de vulnerabilidades activo, de las imágenes Docker que se compilan y publican contra los dos repositorios creados en ECR (`customers-mngr` y `synchronizer`).
+En la configuración del despliegue, es decir, en el archivo [.github/workflows/deploy.yml](https://github.com/josdagaro/ml-challenge-customers-mngr/blob/main/.github/workflows/deploy.yml) encontrará que en los `jobs` denominados `deploy-syncer` y `deploy-customers-mngr`, se encuentran `steps` relacionados a realizar el escaneo de vulnerabilidades, para efectos de esta prueba como un paso `soft` que no genera un bloqueo, pero sí una alerta de las vulnerabilidades de mayor criticidad. Vea este ejemplo:
+
+![Vulnerabilidades ECR](https://github.com/josdagaro/ml-challenge-customers-mngr/blob/main/docs/ecr-scan-0.png)
+![Vulnerabilidades ECR](https://github.com/josdagaro/ml-challenge-customers-mngr/blob/main/docs/ecr-scan-1.png)
+
+En estas imágenes vemos una prueba en que el la detección de vulnerabilidades era bloqueante para continuar con el despliegue de las aplicaciones.
+
 ## Flujo de Despliegue con GitHub Actions
 
 El flujo consta de dos fases, uno para revisión, y otro para aplicar los cambios y lograr el compilado de imagen Docker, su publicación en ECR, y la actualización del servicio en ECS. A continuación el diagrama:
