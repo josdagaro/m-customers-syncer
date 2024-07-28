@@ -49,7 +49,7 @@ jobs:
       env:
         REGION: ${{ env.REGION }}
         REPOSITORY: ${{ env.REPOSITORY }}
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         while true; do
           SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION --query 'imageScanStatus.status' --output text)
