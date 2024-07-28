@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REGION: "us-east-1"
-      REPOSITORY: synchronizer
+      REPOSITORY: "synchronizer"
+      SERVICE_NAME: "synchronizer"
+      CLUSTER_NAME: "my-cluster"
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -52,10 +54,10 @@ jobs:
         while true; do
           SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION | jq -r '.imageScanStatus.status')
           echo "Current scan status: $SCAN_STATUS"
-          if [ "$SCAN_STATUS" = "COMPLETE" ]; then
+          if [ "$SCAN_STATUS" == "COMPLETE" ]; then
             aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION > scan-findings.json
             break
-          elif [ "$SCAN_STATUS" = "FAILED" ]; then
+          elif [ "$SCAN_STATUS" == "FAILED" ]; then
             echo "Image scan failed."
             exit 1
           else
@@ -63,6 +65,26 @@ jobs:
           fi
         done
 
-    - name: Display critical and high vulnerabilities
+    - name: Check for critical and high vulnerabilities
       run: |
-        jq '.imageScanFindings.findings[] | select(.severity == "CRITICAL" or .severity == "HIGH")' scan-findings.json
+        CRITICAL_HIGH=$(jq '[.imageScanFindings.findings[] | select(.severity == "CRITICAL" or .severity == "HIGH")] | length' scan-findings.json)
+        if [ "$CRITICAL_HIGH" -gt 0 ]; then
+          echo "There are $CRITICAL_HIGH critical/high vulnerabilities. Please fix them before deployment."
+          exit 1
+        fi
+
+    - name: Create new task definition revision
+      run: |
+        aws_account_id=$(aws sts get-caller-identity --query Account --output text)
+        sed -e "s/<AWS_ACCOUNT_ID>/$aws_account_id/g" \
+            -e "s/<AWS_REGION>/${{ env.REGION }}/g" \
+            -e "s/<IMAGE_VERSION>/${{ github.sha }}/g" \
+            task-definition.json > ecs_task_definition.json
+
+        aws ecs register-task-definition --cli-input-json file://ecs_task_definition.json
+
+    - name: Update ECS service
+      run: |
+        cluster_name=${{ env.CLUSTER_NAME }}
+        task_definition=$(aws ecs list-task-definitions --family-prefix syncer --status ACTIVE --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text)
+        aws ecs update-service --cluster $cluster_name --service ${{ env.SERVICE_NAME }} --task-definition $task_definition --desired-count 0
