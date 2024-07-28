@@ -25,11 +25,11 @@
                 },
                 {
                     "name": "DB_HOST",
-                    "value": "db"
+                    "value": "<RDS_WRITER_ENDPOINT>"
                 },
                 {
                     "name": "DB_NAME",
-                    "value": "testdb"
+                    "value": "mydatabase"
                 }
             ],
             "secrets": [
@@ -67,11 +67,11 @@
                 },
                 {
                     "name": "DB_HOST",
-                    "value": "db"
+                    "value": "<RDS_READER_ENDPOINT>"
                 },
                 {
                     "name": "DB_NAME",
-                    "value": "testdb"
+                    "value": "mydatabase"
                 }
             ],
             "secrets": [

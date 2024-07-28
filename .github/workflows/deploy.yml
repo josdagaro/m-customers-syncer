@@ -159,6 +159,8 @@ jobs:
           sed -e "s/<AWS_ACCOUNT_ID>/$aws_account_id/g" \
               -e "s/<AWS_REGION>/${{ env.REGION }}/g" \
               -e "s/<IMAGE_VERSION>/${{ github.sha }}/g" \
+              -e "s/<RDS_READER_ENDPOINT>/${{ secrets.RDS_READER_ENDPOINT }}/g" \
+              -e "s/<RDS_WRITER_ENDPOINT>/${{ secrets.RDS_WRITER_ENDPOINT }}/g" \
               task-definition.json > ecs_task_definition.json
 
           aws ecs register-task-definition --cli-input-json file://ecs_task_definition.json
