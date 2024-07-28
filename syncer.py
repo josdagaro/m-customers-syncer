@@ -54,10 +54,10 @@ def fetch_data_from_api():
 def store_data_in_db(data):
     cnx = mysql.connector.connect(user=DB_USER, password=DB_PASSWORD, host=DB_HOST, database=DB_NAME)
     cursor = cnx.cursor()
-    add_user = (
-        "INSERT INTO usuarios "
-        "(id, fec_alta, user_name, codigo_zip, credit_card_num, credit_card_ccv, cuenta_numero, direccion, geo_latitud, geo_longitud, color_favorito, foto_dni, ip, auto, auto_modelo, auto_tipo, auto_color, cantidad_compras_realizadas, avatar, fec_birthday) "
-        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    add_or_update_user = (
+        "INSERT INTO usuarios (id, fec_alta, user_name, codigo_zip, credit_card_num, credit_card_ccv, cuenta_numero, direccion, geo_latitud, geo_longitud, color_favorito, foto_dni, ip, auto, auto_modelo, auto_tipo, auto_color, cantidad_compras_realizadas, avatar, fec_birthday) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+        "ON DUPLICATE KEY UPDATE fec_alta=VALUES(fec_alta), user_name=VALUES(user_name), codigo_zip=VALUES(codigo_zip), credit_card_num=VALUES(credit_card_num), credit_card_ccv=VALUES(credit_card_ccv), cuenta_numero=VALUES(cuenta_numero), direccion=VALUES(direccion), geo_latitud=VALUES(geo_latitud), geo_longitud=VALUES(geo_longitud), color_favorito=VALUES(color_favorito), foto_dni=VALUES(foto_dni), ip=VALUES(ip), auto=VALUES(auto), auto_modelo=VALUES(auto_modelo), auto_tipo=VALUES(auto_tipo), auto_color=VALUES(auto_color), cantidad_compras_realizadas=VALUES(cantidad_compras_realizadas), avatar=VALUES(avatar), fec_birthday=VALUES(fec_birthday)"
     )
 
     for user in data:
@@ -71,12 +71,11 @@ def store_data_in_db(data):
                 user['auto'], user['auto_modelo'], user['auto_tipo'], user['auto_color'], user['cantidad_compras_realizadas'],
                 user['avatar'], fec_birthday
             )
-            cursor.execute(add_user, user_data)
+            cursor.execute(add_or_update_user, user_data)
 
     cnx.commit()
     cursor.close()
     cnx.close()
-
 
 # Crear la tabla en la base de datos si no existe
 def create_table_if_not_exists():

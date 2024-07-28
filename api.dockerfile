@@ -8,10 +8,10 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y netcat-openbsd && apt-get clean
 
 # Copiar el archivo requirements.txt al contenedor
-COPY requirements.txt .
+COPY api-requirements.txt .
 
 # Instalar las dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r api-requirements.txt
 
 # Copiar el script de espera al contenedor
 COPY wait-for-db-ready.sh /app/wait-for-db-ready.sh
@@ -21,4 +21,4 @@ RUN chmod +x /app/wait-for-db-ready.sh
 COPY . .
 
 # Ejecutar la aplicación usando el script de espera
-CMD ["./wait-for-db-ready.sh", "db", "--", "python", "app.py"]
+CMD ["./wait-for-db-ready.sh", "db", "--", "python", "api.py"]

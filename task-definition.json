@@ -1,19 +1,61 @@
 {
-    "family": "syncer",
+    "family": "customers-mngr",
     "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecs-task-execution-role",
     "networkMode": "awsvpc",
     "containerDefinitions": [
         {
-            "name": "app-container",
+            "name": "syncer",
             "image": "<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/synchronizer:<IMAGE_VERSION>",
-            "cpu": 256,
-            "memory": 512,
-            "essential": true,
+            "cpu": 128,
+            "memory": 256,
+            "essential": false,
             "portMappings": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
                     "awslogs-group": "/ecs/syncer",
+                    "awslogs-region": "<AWS_REGION>",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "environment": [
+                {
+                    "name": "AWS_MODE",
+                    "value": "enabled"
+                },
+                {
+                    "name": "DB_HOST",
+                    "value": "db"
+                },
+                {
+                    "name": "DB_NAME",
+                    "value": "testdb"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "DB_SECRET_NAME",
+                    "valueFrom": "arn:aws:secretsmanager:<AWS_REGION>:<AWS_ACCOUNT_ID>:secret:rds-db-creds-Qug0Pf"
+                }
+            ]
+        },
+        {
+            "name": "customers-mngr",
+            "image": "<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/synchronizer:<IMAGE_VERSION>",
+            "cpu": 128,
+            "memory": 256,
+            "essential": true,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/customers-mngr",
                     "awslogs-region": "<AWS_REGION>",
                     "awslogs-stream-prefix": "ecs"
                 }

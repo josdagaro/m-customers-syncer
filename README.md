@@ -1,12 +1,13 @@
-# ml-challenge-syncer
+# ml-challenge-customers-mngr
 
-Esta aplicación consume datos desde una API externa y los almacena de manera segura en una base de datos MySQL. La aplicación implementa varias prácticas de seguridad para cumplir con estándares como PCI DSS y NIST, incluyendo el cifrado de datos sensibles.
+Esta aplicación consume datos desde una API externa y los almacena de manera segura en una base de datos MySQL, adicionalmente disponibiliza una API interna con ciertos controles para poder consultar los clientes almacenados en la base de datos. La aplicación implementa varias prácticas de seguridad para cumplir con estándares como PCI DSS y NIST, incluyendo el cifrado de datos sensibles.
 
 ## Funcionalidades
 
 - Consume datos de una API externa.
 - Cifra datos sensibles antes de almacenarlos.
 - Almacena los datos en una base de datos MySQL.
+- Disponibiliza por una API interna información de clientes en base a roles.
 
 ## Requisitos Previos
 
@@ -61,8 +62,8 @@ Docker Compose viene incluido con Docker Desktop.
 1. Clona este repositorio y navega al directorio del proyecto:
 
 ```sh
-git clone https://github.com/josdagaro/ml-challenge-syncer.git
-cd ml-challenge-syncer
+git clone https://github.com/josdagaro/ml-challenge-customers-mngr.git
+cd ml-challenge-customers-mngr
 ```
 
 2. Asegúrate de que los siguientes archivos estén en el directorio del proyecto:
@@ -100,8 +101,8 @@ Para conectarte a la base de datos MySQL y verificar los datos almacenados:
 
 ## Seguridad y Cumplimiento
 
-La aplicación implementa varias prácticas de seguridad para cumplir con algunos estándares. Para conocer más detalles al respecto, por favor haga click [aquí](https://github.com/josdagaro/ml-challenge-syncer/blob/main/docs/sec-analysis.md).
+La aplicación implementa varias prácticas de seguridad para cumplir con algunos estándares. Para conocer más detalles al respecto, por favor haga click [aquí](https://github.com/josdagaro/ml-challenge-customers-mngr/blob/main/docs/sec-analysis.md).
 
 ## Despliegue
 
-Para conocer con mayor detalle cómo funciona del despliegue de la aplicación, haga click [aquí](https://github.com/josdagaro/ml-challenge-syncer/blob/main/docs/deploy.md).
+Para conocer con mayor detalle cómo funciona del despliegue de la aplicación, haga click [aquí](https://github.com/josdagaro/ml-challenge-customers-mngr/blob/main/docs/deployment.md).

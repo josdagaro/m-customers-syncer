@@ -64,6 +64,7 @@ Estándar Aplicado: NIST, OWASP (Open Web Application Security Project)
 ## Resumen
 El código de esta solución aplica varios estándares de seguridad para proteger los datos sensibles:
 
-1. Cifrado de Datos Sensibles: Utilizamos cryptography para cifrar datos sensibles, cumpliendo con PCI DSS y NIST.
+1. Cifrado de Datos Sensibles: Se utilizó cryptography para cifrar datos sensibles, cumpliendo con PCI DSS y NIST.
 2. Cifrado en Reposo: Se habilitó desde AWS RDS haciendo uso de una CMK.
-3. Validación y Sanitización de Entradas: Validamos y sanitizamos las entradas para protegernos contra vulnerabilidades, cumpliendo con NIST y OWASP.
+3. Validación y Sanitización de Entradas: Se validó y sanitizó las entradas para protección contra vulnerabilidades, cumpliendo con NIST y OWASP.
+4. Se condicionó la disponibilidad de los datos de clientes a través de una API interna basada en roles.
