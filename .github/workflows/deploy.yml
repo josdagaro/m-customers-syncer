@@ -33,14 +33,12 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-        docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
         docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-        docker push $REGISTRY/$REPOSITORY:latest
 
     - name: Start image scan
       id: start-scan
       env:
-        IMAGE_TAG: latest
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         aws ecr start-image-scan --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG
 
