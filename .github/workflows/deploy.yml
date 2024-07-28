@@ -50,7 +50,7 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       run: |
         while true; do
-          SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION | jq '.imageScanStatus.status')
+          SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION | jq -r '.imageScanStatus.status')
           echo "Current scan status: $SCAN_STATUS"
           if [ "$SCAN_STATUS" = "COMPLETE" ]; then
             aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION > scan-findings.json
