@@ -1,0 +1,69 @@
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      REGION: "us-east-1"
+      REPOSITORY: synchronizer
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.REGION }}
+
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, tag, and push Docker image to Amazon ECR
+      env:
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+        docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:latest
+        docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+        docker push $REGISTRY/$REPOSITORY:latest
+
+    - name: Start image scan
+      id: start-scan
+      env:
+        IMAGE_TAG: latest
+      run: |
+        aws ecr start-image-scan --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG
+
+    - name: Wait for image scan to complete and get findings
+      id: get-scan-findings
+      env:
+        REGION: ${{ env.REGION }}
+        REPOSITORY: ${{ env.REPOSITORY }}
+        IMAGE_TAG: latest
+      run: |
+        while true; do
+          SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION --query 'imageScanStatus.status' --output text)
+          echo "Current scan status: $SCAN_STATUS"
+          if [ "$SCAN_STATUS" = "COMPLETE" ]; then
+            aws ecr describe-image-scan-findings --repository-name $REPOSITORY --image-id imageTag=$IMAGE_TAG --region $REGION > scan-findings.json
+            break
+          elif [ "$SCAN_STATUS" = "FAILED" ]; then
+            echo "Image scan failed."
+            exit 1
+          else
+            sleep 10
+          fi
+        done
+
+    - name: Display critical and high vulnerabilities
+      run: |
+        jq '.imageScanFindings.findings[] | select(.severity == "CRITICAL" or .severity == "HIGH")' scan-findings.json

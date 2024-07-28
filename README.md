@@ -100,4 +100,8 @@ Para conectarte a la base de datos MySQL y verificar los datos almacenados:
 
 ## Seguridad y Cumplimiento
 
-La aplicación app.py implementa varias prácticas de seguridad para cumplir con algunos estándares. Para conocer más detalles al respecto, por favor haga click [aquí](https://github.com/josdagaro/ml-challenge-syncer/blob/main/docs/sec-analysis.md).
+La aplicación implementa varias prácticas de seguridad para cumplir con algunos estándares. Para conocer más detalles al respecto, por favor haga click [aquí](https://github.com/josdagaro/ml-challenge-syncer/blob/main/docs/sec-analysis.md).
+
+## Despliegue
+
+Para conocer con mayor detalle cómo funciona del despliegue de la aplicación, haga click [aquí](https://github.com/josdagaro/ml-challenge-syncer/blob/main/docs/deploy.md).
