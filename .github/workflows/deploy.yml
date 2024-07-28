@@ -168,5 +168,5 @@ jobs:
       - name: Update ECS service
         run: |
           cluster_name=${{ env.CLUSTER_NAME }}
-          task_definition=$(aws ecs list-task-definitions --family-prefix customers-mngr --status ACTIVE --sort DESC --max-items 1 --query "taskDefinitionArns[0]" --output text)
+          task_definition=$(aws ecs list-task-definitions --family-prefix customers-mngr --status ACTIVE --sort DESC --max-items 1 | jq -r '.taskDefinitionArns[0]')
           aws ecs update-service --cluster $cluster_name --service ${{ env.SERVICE_NAME }} --task-definition $task_definition --desired-count 1
