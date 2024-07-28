@@ -4,13 +4,8 @@ FROM python:3.9-slim
 # Establecer el directorio de trabajo
 WORKDIR /app
 
-# Actualizar el sistema e instalar las dependencias necesarias
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    netcat-openbsd \
-    zlib1g \
-    zlib1g-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Instalar netcat-openbsd
+RUN apt-get update && apt-get install -y netcat-openbsd && apt-get clean
 
 # Copiar el archivo requirements.txt al contenedor
 COPY requirements.txt .
