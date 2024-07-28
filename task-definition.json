@@ -41,7 +41,7 @@
         },
         {
             "name": "customers-mngr",
-            "image": "<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/synchronizer:<IMAGE_VERSION>",
+            "image": "<AWS_ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/customers-mngr:<IMAGE_VERSION>",
             "cpu": 128,
             "memory": 256,
             "essential": true,
